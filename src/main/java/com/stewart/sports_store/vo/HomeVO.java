@@ -12,13 +12,15 @@ public class HomeVO {
     @JsonProperty("poster")
     private String posterImg;
     @JsonProperty("recommend")
-    private List<HomeRecommendVO> homeRecommendVOS;
-    @JsonProperty("new")
-    private List<HomeNewVO> homeNewVOS;
+    private List<GeneralSingleItemVO> homeRecommendVO;
+    @JsonProperty("new_arrivals")
+    private List<GeneralSingleItemVO> homeNewVO;
     @JsonProperty("trending")
-    private List<HomeTrendingVO> homeTrendingVOS;
+    private List<GeneralSingleItemVO> homeTrendingVO;
     @JsonProperty("discount")
-    private List<HomeDiscountVO> homeDiscountVOS;
-    @JsonProperty("group")
-    private List<HomeSimpleGroupVO> homeSimpleGroupVOS;
+    private List<GeneralDiscountItemVO> generalDiscountItemVOS;
+    @JsonProperty("accessories")
+    private List<GeneralSingleItemVO> homeAccessoriesVO;
+    @JsonProperty("vip_poster")
+    private String vipPosterImg;
 }

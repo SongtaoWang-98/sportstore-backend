@@ -8,13 +8,15 @@ import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
-public class HomeNewVO {
+public class GeneralDiscountItemVO {
     @JsonProperty("name")
     private String itemName;
     @JsonProperty("img")
     private String itemPic1;
     @JsonProperty("price")
     private BigDecimal currentPrice;
+    @JsonProperty("previousPrice")
+    private BigDecimal previousPrice;
     @JsonProperty("group")
     private String targetGroup;
     @JsonProperty("style")

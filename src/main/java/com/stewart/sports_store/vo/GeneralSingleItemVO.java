@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
-public class HomeRecommendVO {
+public class GeneralSingleItemVO {
     @JsonProperty("name")
     private String itemName;
     @JsonProperty("img")

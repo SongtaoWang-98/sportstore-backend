@@ -9,11 +9,9 @@ import com.stewart.sports_store.repository.ItemInfoRepository;
 import com.stewart.sports_store.service.HomeService;
 import com.stewart.sports_store.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class HomeServiceImpl implements HomeService {
@@ -55,16 +53,16 @@ public class HomeServiceImpl implements HomeService {
 
         //海报图片
         homeVO.setPosterImg("../static/poster1.jpg");
+
         //推荐
         int[] recommendList = new int[]{2,6}; //推荐的itemId
         int recommendItemNumber = recommendList.length;
-        List<HomeRecommendVO> homeRecommendVOList= new ArrayList<>();
-        for(int i = 0; i < recommendItemNumber; i++) {
-            Integer index = recommendList[i];
+        List<GeneralSingleItemVO> homeRecommendVOList= new ArrayList<>();
+        for (Integer index : recommendList) {
             ItemAttribute recommendItemAttribute = itemAttributeRepository.findByItemId(index);
             ItemCategory recommendItemCategory = itemCategoryRepository.findByItemId(index);
             ItemInfo recommendItemInfo = itemInfoRepository.findByItemId(index);
-            HomeRecommendVO homeRecommendVO = new HomeRecommendVO(
+            GeneralSingleItemVO homeRecommendVO = new GeneralSingleItemVO(
                     recommendItemInfo.getItemName(),
                     recommendItemInfo.getItemPic1(),
                     recommendItemAttribute.getCurrentPrice(),
@@ -73,18 +71,18 @@ public class HomeServiceImpl implements HomeService {
             );
             homeRecommendVOList.add(homeRecommendVO);
         }
-        homeVO.setHomeRecommendVOS(homeRecommendVOList);
+        homeVO.setHomeRecommendVO(homeRecommendVOList);
 
         //新品
         int newItemNumber = 6; //展示新品的数量
         //按上架时间排序
         List<ItemAttribute> timeSortList = itemAttributeRepository.getByOrderByUpdateTimeDesc();
-        List<HomeNewVO> homeNewVOList = new ArrayList<>();
+        List<GeneralSingleItemVO> homeNewVOList = new ArrayList<>();
         for(int i = 0; i < newItemNumber; i++){
             Integer index = timeSortList.get(i).getItemId();
             ItemCategory newItemCategory = itemCategoryRepository.findByItemId(index);
             ItemInfo newItemInfo = itemInfoRepository.findByItemId(index);
-            HomeNewVO homeNewVO = new HomeNewVO(
+            GeneralSingleItemVO homeNewVO = new GeneralSingleItemVO(
                     newItemInfo.getItemName(),
                     newItemInfo.getItemPic1(),
                     timeSortList.get(i).getCurrentPrice(),
@@ -93,19 +91,18 @@ public class HomeServiceImpl implements HomeService {
             );
             homeNewVOList.add(homeNewVO);
         }
-        homeVO.setHomeNewVOS(homeNewVOList);
+        homeVO.setHomeNewVO(homeNewVOList);
 
         //热销
         int trendingItemNumber = 6; //展示新品的数量
         //按卖出数量排序
-        Sort saleSort = Sort.by(Sort.Direction.DESC, "numberSale");
         List<ItemAttribute> saleSortList = itemAttributeRepository.getByOrderByNumberSaleDesc();
-        List<HomeTrendingVO> homeTrendingVOList = new ArrayList<>();
+        List<GeneralSingleItemVO> homeTrendingVOList = new ArrayList<>();
         for(int i = 0; i < trendingItemNumber; i++){
             Integer index = saleSortList.get(i).getItemId();
             ItemCategory trendingItemCategory = itemCategoryRepository.findByItemId(index);
             ItemInfo trendingItemInfo = itemInfoRepository.findByItemId(index);
-            HomeTrendingVO homeTrendingVO = new HomeTrendingVO(
+            GeneralSingleItemVO homeTrendingVO = new GeneralSingleItemVO(
                     trendingItemInfo.getItemName(),
                     trendingItemInfo.getItemPic1(),
                     saleSortList.get(i).getCurrentPrice(),
@@ -114,16 +111,16 @@ public class HomeServiceImpl implements HomeService {
             );
             homeTrendingVOList.add(homeTrendingVO);
         }
-        homeVO.setHomeTrendingVOS(homeTrendingVOList);
+        homeVO.setHomeTrendingVO(homeTrendingVOList);
 
         //折扣
         List<ItemAttribute> discountList = itemAttributeRepository.findByPreviousPriceIsNotNull();
-        List<HomeDiscountVO> homeDiscountVOList = new ArrayList<>();
+        List<GeneralDiscountItemVO> generalDiscountItemVOList = new ArrayList<>();
         for(ItemAttribute itemAttribute: discountList) {
             Integer index = itemAttribute.getItemId();
             ItemCategory discountItemCategory = itemCategoryRepository.findByItemId(index);
             ItemInfo discountItemInfo = itemInfoRepository.findByItemId(index);
-            HomeDiscountVO homeDiscountVO = new HomeDiscountVO(
+            GeneralDiscountItemVO generalDiscountItemVO = new GeneralDiscountItemVO(
                     discountItemInfo.getItemName(),
                     discountItemInfo.getItemPic1(),
                     itemAttribute.getCurrentPrice(),
@@ -131,17 +128,15 @@ public class HomeServiceImpl implements HomeService {
                     discountItemCategory.getTargetGroup(),
                     discountItemCategory.getUsageStyle()
             );
-            homeDiscountVOList.add(homeDiscountVO);
+            generalDiscountItemVOList.add(generalDiscountItemVO);
         }
-        homeVO.setHomeDiscountVOS(homeDiscountVOList);
+        homeVO.setGeneralDiscountItemVOS(generalDiscountItemVOList);
 
-        //组别分类
-        List<HomeSimpleGroupVO> homeSimpleGroupVOList = new ArrayList<>();
-        homeSimpleGroupVOList.add(new HomeSimpleGroupVO("men", "../static/home-group-men.jpg"));
-        homeSimpleGroupVOList.add(new HomeSimpleGroupVO("women", "../static/home-group-women.jpg"));
-        homeSimpleGroupVOList.add(new HomeSimpleGroupVO("kids", "../static/home-group-kids.jpg"));
-        homeVO.setHomeSimpleGroupVOS(homeSimpleGroupVOList);
+        //配件
+        homeVO.setHomeAccessoriesVO(null);
 
+        //会员海报
+        homeVO.setVipPosterImg("../static/vip_poster.jpg");
         return homeVO;
     }
 }
