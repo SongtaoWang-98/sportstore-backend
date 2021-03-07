@@ -72,6 +72,7 @@ public class HomeServiceImpl implements HomeService {
             ItemCategory recommendItemCategory = itemCategoryRepository.findByItemId(index);
             ItemInfo recommendItemInfo = itemInfoRepository.findByItemId(index);
             GeneralSingleItemVO homeRecommendVO = new GeneralSingleItemVO(
+                    recommendItemInfo.getItemId(),
                     recommendItemAttribute.getItemBrand(),
                     recommendItemInfo.getItemName(),
                     recommendItemInfo.getItemPic1(),
@@ -93,6 +94,7 @@ public class HomeServiceImpl implements HomeService {
             ItemCategory newItemCategory = itemCategoryRepository.findByItemId(index);
             ItemInfo newItemInfo = itemInfoRepository.findByItemId(index);
             GeneralSingleItemVO homeNewVO = new GeneralSingleItemVO(
+                    newItemInfo.getItemId(),
                     timeSortList.get(i).getItemBrand(),
                     newItemInfo.getItemName(),
                     newItemInfo.getItemPic1(),
@@ -114,6 +116,7 @@ public class HomeServiceImpl implements HomeService {
             ItemCategory trendingItemCategory = itemCategoryRepository.findByItemId(index);
             ItemInfo trendingItemInfo = itemInfoRepository.findByItemId(index);
             GeneralSingleItemVO homeTrendingVO = new GeneralSingleItemVO(
+                    trendingItemInfo.getItemId(),
                     saleSortList.get(i).getItemBrand(),
                     trendingItemInfo.getItemName(),
                     trendingItemInfo.getItemPic1(),
@@ -134,6 +137,7 @@ public class HomeServiceImpl implements HomeService {
             ItemCategory discountItemCategory = itemCategoryRepository.findByItemId(index);
             ItemInfo discountItemInfo = itemInfoRepository.findByItemId(index);
             GeneralDiscountItemVO generalDiscountItemVO = new GeneralDiscountItemVO(
+                    discountItemInfo.getItemId(),
                     discountItemInfo.getItemName(),
                     discountItemInfo.getItemPic1(),
                     discountList.get(i).getCurrentPrice(),
@@ -156,6 +160,7 @@ public class HomeServiceImpl implements HomeService {
             ItemAttribute accessoriesItemAttribute = itemAttributeRepository.findByItemId(index);
             ItemInfo accessoriesItemInfo = itemInfoRepository.findByItemId(index);
             GeneralSingleItemVO generalSingleItemVO = new GeneralSingleItemVO(
+                    accessoriesItemInfo.getItemId(),
                     accessoriesItemAttribute.getItemBrand(),
                     accessoriesItemInfo.getItemName(),
                     accessoriesItemInfo.getItemPic1(),
