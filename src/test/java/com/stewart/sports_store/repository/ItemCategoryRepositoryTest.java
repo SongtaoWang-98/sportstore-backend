@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,10 +24,12 @@ class ItemCategoryRepositoryTest {
     }
 
     @Test
-    void findByTargetGroup() {
-        List<ItemCategory> list = itemCategoryRepository.findByTargetGroup("men");
-        for(ItemCategory itemCategory: list) {
-            System.out.println(itemCategory);
+    void findTest() {
+        List<String> list = new ArrayList<>();
+        Collections.addAll(list,"shoes","clothing");
+        List<ItemCategory> categoryNameNotIn = itemCategoryRepository.findByCategoryNameNotIn(list);
+        for(ItemCategory category: categoryNameNotIn) {
+            System.out.println(category);
         }
     }
 }

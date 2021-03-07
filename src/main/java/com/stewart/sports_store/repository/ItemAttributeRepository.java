@@ -11,4 +11,5 @@ public interface ItemAttributeRepository extends JpaRepository<ItemAttribute,Int
     List<ItemAttribute> getByOrderByUpdateTimeDesc();
     List<ItemAttribute> getByOrderByNumberSaleDesc();
     List<ItemAttribute> findByPreviousPriceIsNotNull();
+    List<ItemAttribute> findByItemBrand(String itemBrand);
 }

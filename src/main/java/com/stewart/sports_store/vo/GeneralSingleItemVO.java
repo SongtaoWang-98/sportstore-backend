@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 public class GeneralSingleItemVO {
+    @JsonProperty("brand")
+    private String itemBrand;
     @JsonProperty("name")
     private String itemName;
     @JsonProperty("img")

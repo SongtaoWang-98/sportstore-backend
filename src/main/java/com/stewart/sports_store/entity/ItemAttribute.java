@@ -21,4 +21,5 @@ public class ItemAttribute {
     private Date updateTime;
     private Integer numberStock;
     private Integer numberSale;
+    private String itemBrand;
 }
