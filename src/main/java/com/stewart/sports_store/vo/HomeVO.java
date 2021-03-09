@@ -9,12 +9,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class HomeVO {
-    @JsonProperty("classification")
-    private List<GroupVO> classificationVOS;
     @JsonProperty("poster")
     private String posterImg;
     @JsonProperty("recommend")
-    private List<GeneralSingleItemVO> homeRecommendVO;
+    private List<GeneralSimpleItemVO> homeRecommendVO;
     @JsonProperty("new_arrivals")
     private List<GeneralSingleItemVO> homeNewVO;
     @JsonProperty("trending")
@@ -22,7 +20,7 @@ public class HomeVO {
     @JsonProperty("discount")
     private List<GeneralDiscountItemVO> generalDiscountItemVOS;
     @JsonProperty("accessories")
-    private List<GeneralSingleItemVO> homeAccessoriesVO;
+    private List<GeneralSimpleItemVO> homeAccessoriesVO;
     @JsonProperty("vip_poster")
     private String vipPosterImg;
 }

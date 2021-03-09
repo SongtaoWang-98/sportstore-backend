@@ -1,6 +1,5 @@
 package com.stewart.sports_store.controller;
 
-import com.stewart.sports_store.entity.ItemInfo;
 import com.stewart.sports_store.service.HomeService;
 import com.stewart.sports_store.util.ResultVOUtil;
 import com.stewart.sports_store.vo.ResultVO;
@@ -20,7 +19,7 @@ public class HomeController {
 
     @GetMapping
     public ResultVO index() {
-        System.out.println("第一次打印sql");
+        System.out.println("123");
         return ResultVOUtil.success(homeService.findHomeVO());
     }
 

@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
-@CacheConfig(cacheNames = "userService")
+@CacheConfig(cacheNames = "homeService")
 public class HomeServiceImpl implements HomeService {
 
     @Autowired
@@ -35,38 +35,6 @@ public class HomeServiceImpl implements HomeService {
     @Cacheable(value = "findHomeVO")
     public HomeVO findHomeVO() {
         HomeVO homeVO = new HomeVO();
-        //组别分类
-        List<GroupVO> groupVOList = new ArrayList<>();
-        String[] groupNames = new String[]{"男子", "女子", "儿童"};
-        String[] categoryNames = new String[]{"鞋类", "服装", "配件"};
-        for(String group: groupNames){
-            List<CategoryVO> categoryVOList = new ArrayList<>();
-            for(String category: categoryNames) {
-                HashSet<String> styleNames = new HashSet<>();
-                List<ItemCategory> list = itemCategoryRepository.findByTargetGroupAndCategoryName(group,category);
-                for(ItemCategory item: list) {
-                    styleNames.add(item.getUsageStyle());
-                }
-                categoryVOList.add(new CategoryVO(category, new ArrayList<>(styleNames)));
-            }
-            groupVOList.add(new GroupVO(group,categoryVOList));
-        }
-        //品牌分类
-        List<ItemAttribute> allItemAttributes = itemAttributeRepository.findAll();
-        HashSet<String> brandNames = new HashSet<>();
-        for(ItemAttribute attribute: allItemAttributes) {
-            brandNames.add(attribute.getItemBrand());
-        }
-        List<CategoryVO> collectionVOList = new ArrayList<>();
-        collectionVOList.add(new CategoryVO("品牌",new ArrayList<>(brandNames)));
-        groupVOList.add(new GroupVO("分类",collectionVOList));
-        //热卖分类
-        List<CategoryVO> saleVOList = new ArrayList<>();
-        for(String group: groupNames) {
-            saleVOList.add(new CategoryVO( group + "热卖", Arrays.asList(categoryNames)));
-        }
-        groupVOList.add(new GroupVO("热卖",saleVOList));
-        homeVO.setClassificationVOS(groupVOList);
 
         //海报图片
         homeVO.setPosterImg("../static/poster1.jpg");
@@ -77,19 +45,11 @@ public class HomeServiceImpl implements HomeService {
         int second = rand.nextInt(10);
         while(second == first) second = rand.nextInt(10);
         int[] recommendList = new int[]{first,second}; //推荐的itemId
-        List<GeneralSingleItemVO> homeRecommendVOList= new ArrayList<>();
+        List<GeneralSimpleItemVO> homeRecommendVOList= new ArrayList<>();
         for (Integer index : recommendList) {
-            ItemAttribute recommendItemAttribute = itemAttributeRepository.findByItemId(index);
-            ItemCategory recommendItemCategory = itemCategoryRepository.findByItemId(index);
-            ItemInfo recommendItemInfo = itemInfoRepository.findByItemId(index);
-            GeneralSingleItemVO homeRecommendVO = new GeneralSingleItemVO(
-                    recommendItemInfo.getItemId(),
-                    recommendItemAttribute.getItemBrand(),
-                    recommendItemInfo.getItemName(),
-                    recommendItemInfo.getItemPic1(),
-                    recommendItemAttribute.getCurrentPrice(),
-                    recommendItemCategory.getTargetGroup(),
-                    recommendItemCategory.getUsageStyle()
+            GeneralSimpleItemVO homeRecommendVO = new GeneralSimpleItemVO(
+                    index,
+                    itemInfoRepository.findByItemId(index).getItemPic1()
             );
             homeRecommendVOList.add(homeRecommendVO);
         }
@@ -105,7 +65,7 @@ public class HomeServiceImpl implements HomeService {
             ItemCategory newItemCategory = itemCategoryRepository.findByItemId(index);
             ItemInfo newItemInfo = itemInfoRepository.findByItemId(index);
             GeneralSingleItemVO homeNewVO = new GeneralSingleItemVO(
-                    newItemInfo.getItemId(),
+                    index,
                     timeSortList.get(i).getItemBrand(),
                     newItemInfo.getItemName(),
                     newItemInfo.getItemPic1(),
@@ -118,7 +78,7 @@ public class HomeServiceImpl implements HomeService {
         homeVO.setHomeNewVO(homeNewVOList);
 
         //热销
-        int trendingItemNumber = 6; //展示新品的数量
+        int trendingItemNumber = 6; //展示的数量
         //按卖出数量排序
         List<ItemAttribute> saleSortList = itemAttributeRepository.getByOrderByNumberSaleDesc();
         List<GeneralSingleItemVO> homeTrendingVOList = new ArrayList<>();
@@ -127,7 +87,7 @@ public class HomeServiceImpl implements HomeService {
             ItemCategory trendingItemCategory = itemCategoryRepository.findByItemId(index);
             ItemInfo trendingItemInfo = itemInfoRepository.findByItemId(index);
             GeneralSingleItemVO homeTrendingVO = new GeneralSingleItemVO(
-                    trendingItemInfo.getItemId(),
+                    index,
                     saleSortList.get(i).getItemBrand(),
                     trendingItemInfo.getItemName(),
                     trendingItemInfo.getItemPic1(),
@@ -148,7 +108,7 @@ public class HomeServiceImpl implements HomeService {
             ItemCategory discountItemCategory = itemCategoryRepository.findByItemId(index);
             ItemInfo discountItemInfo = itemInfoRepository.findByItemId(index);
             GeneralDiscountItemVO generalDiscountItemVO = new GeneralDiscountItemVO(
-                    discountItemInfo.getItemId(),
+                    index,
                     discountItemInfo.getItemName(),
                     discountItemInfo.getItemPic1(),
                     discountList.get(i).getCurrentPrice(),
@@ -165,21 +125,15 @@ public class HomeServiceImpl implements HomeService {
         List<String> categories = new ArrayList<>();
         Collections.addAll(categories,"鞋类","服装");
         List<ItemCategory> accessoriesList = itemCategoryRepository.findByCategoryNameNotIn(categories);
-        List<GeneralSingleItemVO> homeAccessoriesList = new ArrayList<>();
+        List<GeneralSimpleItemVO> homeAccessoriesList = new ArrayList<>();
         for(int i = 0; i < accessoriesItemNumber; i++) {
             Integer index = accessoriesList.get(accessoriesList.size() - i - 1).getItemId();
-            ItemAttribute accessoriesItemAttribute = itemAttributeRepository.findByItemId(index);
             ItemInfo accessoriesItemInfo = itemInfoRepository.findByItemId(index);
-            GeneralSingleItemVO generalSingleItemVO = new GeneralSingleItemVO(
-                    accessoriesItemInfo.getItemId(),
-                    accessoriesItemAttribute.getItemBrand(),
-                    accessoriesItemInfo.getItemName(),
-                    accessoriesItemInfo.getItemPic1(),
-                    accessoriesItemAttribute.getCurrentPrice(),
-                    accessoriesList.get(i).getTargetGroup(),
-                    accessoriesList.get(i).getUsageStyle()
+            GeneralSimpleItemVO generalSimpleItemVO = new GeneralSimpleItemVO(
+                    index,
+                    accessoriesItemInfo.getItemPic1()
             );
-            homeAccessoriesList.add(generalSingleItemVO);
+            homeAccessoriesList.add(generalSimpleItemVO);
         }
         homeVO.setHomeAccessoriesVO(homeAccessoriesList);
 

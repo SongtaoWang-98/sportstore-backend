@@ -32,4 +32,12 @@ class ItemCategoryRepositoryTest {
             System.out.println(category);
         }
     }
+
+    @Test
+    void find() {
+        List<ItemCategory> categories = itemCategoryRepository.findByTargetGroupAndCategoryNameAndUsageStyle("男子","鞋类", "跑鞋");
+        for(ItemCategory category: categories) {
+            System.out.println(category);
+        }
+    }
 }
