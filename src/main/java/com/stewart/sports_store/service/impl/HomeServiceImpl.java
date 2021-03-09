@@ -8,12 +8,18 @@ import com.stewart.sports_store.repository.ItemCategoryRepository;
 import com.stewart.sports_store.repository.ItemInfoRepository;
 import com.stewart.sports_store.service.HomeService;
 import com.stewart.sports_store.vo.*;
+import io.netty.channel.ChannelHandler;
+import org.hibernate.annotations.Cascade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
+@CacheConfig(cacheNames = "userService")
 public class HomeServiceImpl implements HomeService {
 
     @Autowired
@@ -26,6 +32,7 @@ public class HomeServiceImpl implements HomeService {
     private ItemInfoRepository itemInfoRepository;
 
     @Override
+    @Cacheable(value = "findHomeVO")
     public HomeVO findHomeVO() {
         HomeVO homeVO = new HomeVO();
         //组别分类
@@ -65,7 +72,11 @@ public class HomeServiceImpl implements HomeService {
         homeVO.setPosterImg("../static/poster1.jpg");
 
         //推荐（精选）
-        int[] recommendList = new int[]{8,6}; //推荐的itemId
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
+        int first = rand.nextInt(10);
+        int second = rand.nextInt(10);
+        while(second == first) second = rand.nextInt(10);
+        int[] recommendList = new int[]{first,second}; //推荐的itemId
         List<GeneralSingleItemVO> homeRecommendVOList= new ArrayList<>();
         for (Integer index : recommendList) {
             ItemAttribute recommendItemAttribute = itemAttributeRepository.findByItemId(index);

@@ -1,5 +1,6 @@
 package com.stewart.sports_store.controller;
 
+import com.stewart.sports_store.entity.ItemInfo;
 import com.stewart.sports_store.service.HomeService;
 import com.stewart.sports_store.util.ResultVOUtil;
 import com.stewart.sports_store.vo.ResultVO;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @CrossOrigin
@@ -18,6 +20,7 @@ public class HomeController {
 
     @GetMapping
     public ResultVO index() {
+        System.out.println("第一次打印sql");
         return ResultVOUtil.success(homeService.findHomeVO());
     }
 
