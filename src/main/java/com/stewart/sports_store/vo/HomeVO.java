@@ -11,14 +11,14 @@ import java.util.List;
 public class HomeVO {
     @JsonProperty("poster")
     private String posterImg;
-    @JsonProperty("recommend")
-    private List<GeneralSimpleItemVO> homeRecommendVO;
-    @JsonProperty("new_arrivals")
-    private List<GeneralSingleItemVO> homeNewVO;
     @JsonProperty("trending")
     private List<GeneralSingleItemVO> homeTrendingVO;
+    @JsonProperty("new_arrivals")
+    private List<GeneralSimpleItemVO> homeNewVO;
     @JsonProperty("discount")
-    private List<GeneralDiscountItemVO> generalDiscountItemVOS;
+    private List<GeneralSingleItemVO> generalDiscountItemVOS;
+    @JsonProperty("recommend")
+    private List<GeneralSimpleItemVO> homeRecommendVO;
     @JsonProperty("accessories")
     private List<GeneralSimpleItemVO> homeAccessoriesVO;
     @JsonProperty("vip_poster")

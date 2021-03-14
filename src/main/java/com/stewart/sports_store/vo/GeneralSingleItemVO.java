@@ -21,6 +21,8 @@ public class GeneralSingleItemVO {
     private String itemPic1;
     @JsonProperty("price")
     private BigDecimal currentPrice;
+    @JsonProperty("previousPrice")
+    private BigDecimal previousPrice;
     @JsonProperty("group")
     private String targetGroup;
     @JsonProperty("style")

@@ -8,9 +8,7 @@ import com.stewart.sports_store.repository.ItemCategoryRepository;
 import com.stewart.sports_store.repository.ItemInfoRepository;
 import com.stewart.sports_store.service.ItemListService;
 import com.stewart.sports_store.util.TranslatorUtil;
-import com.stewart.sports_store.vo.GeneralDiscountItemVO;
 import com.stewart.sports_store.vo.GeneralSingleItemVO;
-import com.stewart.sports_store.vo.ItemDiscountListVO;
 import com.stewart.sports_store.vo.ItemListVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -61,6 +59,7 @@ public class ItemListServiceImpl implements ItemListService {
                     itemInfo.getItemName(),
                     itemInfo.getItemPic1(),
                     itemAttribute.getCurrentPrice(),
+                    itemAttribute.getPreviousPrice(),
                     itemCategory.getTargetGroup(),
                     itemCategory.getUsageStyle()
             );
@@ -86,6 +85,7 @@ public class ItemListServiceImpl implements ItemListService {
                     itemInfo.getItemName(),
                     itemInfo.getItemPic1(),
                     itemAttribute.getCurrentPrice(),
+                    itemAttribute.getPreviousPrice(),
                     itemCategory.getTargetGroup(),
                     itemCategory.getUsageStyle()
             );
@@ -97,9 +97,9 @@ public class ItemListServiceImpl implements ItemListService {
 
     @Override
     @Cacheable(value = "findDiscountByCategory")
-    public ItemDiscountListVO findDiscountByCategory(String group, String category) {
-        ItemDiscountListVO itemListVO = new ItemDiscountListVO();
-        List<GeneralDiscountItemVO> generalDiscountItemVOS = new ArrayList<>();
+    public ItemListVO findDiscountByCategory(String group, String category) {
+        ItemListVO itemListVO = new ItemListVO();
+        List<GeneralSingleItemVO> generalDiscountItemVOS = new ArrayList<>();
         List<ItemAttribute> itemDiscount = itemAttributeRepository.findByPreviousPriceIsNotNull();
         ArrayList<Integer> discountId = new ArrayList<>();
         for(ItemAttribute itemAttribute: itemDiscount) {
@@ -113,8 +113,9 @@ public class ItemListServiceImpl implements ItemListService {
             if(discountId.contains(index)) {
                 ItemInfo itemInfo = itemInfoRepository.findByItemId(index);
                 ItemAttribute itemAttribute = itemAttributeRepository.findByItemId(index);
-                GeneralDiscountItemVO generalDiscountItemVO = new GeneralDiscountItemVO(
+                GeneralSingleItemVO generalDiscountItemVO = new GeneralSingleItemVO(
                         index,
+                        itemAttribute.getItemBrand(),
                         itemInfo.getItemName(),
                         itemInfo.getItemPic1(),
                         itemAttribute.getCurrentPrice(),
