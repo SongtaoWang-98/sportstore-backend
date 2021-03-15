@@ -35,6 +35,15 @@ public class TranslatorUtil {
             case "Anta": return "安踏";
             case "Converse": return"匡威";
 
+            case "black": return "黑色";
+            case "white": return "白色";
+            case "red": return "红色";
+            case "pink": return "粉色";
+            case "blue": return "蓝色";
+            case "green": return "绿色";
+            case "yellow": return "黄色";
+            case "colorful": return"彩色";
+
             default: return "无";
         }
     }

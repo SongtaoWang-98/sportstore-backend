@@ -64,7 +64,7 @@ public class RedisConfig extends CachingConfigurerSupport
         RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration
                 .defaultCacheConfig()
                 .serializeValuesWith(pair)      // 设置序列化方式
-                .entryTtl(Duration.ofSeconds(20)); // 设置过期时间
+                .entryTtl(Duration.ofSeconds(200)); // 设置过期时间
 
         return RedisCacheManager
                 .builder(RedisCacheWriter.nonLockingRedisCacheWriter(factory))

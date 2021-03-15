@@ -4,5 +4,5 @@ import com.stewart.sports_store.vo.HomeVO;
 
 
 public interface HomeService {
-    public HomeVO findHomeVO();
+    HomeVO findHomeVO();
 }

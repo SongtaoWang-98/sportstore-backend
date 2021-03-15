@@ -8,7 +8,7 @@ import com.stewart.sports_store.repository.ItemCategoryRepository;
 import com.stewart.sports_store.repository.ItemInfoRepository;
 import com.stewart.sports_store.service.ItemListService;
 import com.stewart.sports_store.util.TranslatorUtil;
-import com.stewart.sports_store.vo.GeneralSingleItemVO;
+import com.stewart.sports_store.vo.GeneralDetailedItemVO;
 import com.stewart.sports_store.vo.ItemListVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@CacheConfig(cacheNames = "itemListService")
+@CacheConfig(cacheNames = "homeService")
 public class ItemListServiceImpl implements ItemListService {
 
     @Autowired
@@ -35,7 +35,7 @@ public class ItemListServiceImpl implements ItemListService {
     @Cacheable(value = "findByCategory")
     public ItemListVO findItemsByCategory(String group, String category, String style) {
         ItemListVO itemListVO = new ItemListVO();
-        List<GeneralSingleItemVO> generalSingleItemVOS = new ArrayList<>();
+        List<GeneralDetailedItemVO> generalDetailedItemVOS = new ArrayList<>();
         List<ItemCategory> itemsByCategoryList;
         if(style.equals("all")) {
             if(category.equals("all")) {
@@ -53,19 +53,21 @@ public class ItemListServiceImpl implements ItemListService {
             Integer index = itemCategory.getItemId();
             ItemInfo itemInfo = itemInfoRepository.findByItemId(index);
             ItemAttribute itemAttribute = itemAttributeRepository.findByItemId(index);
-            GeneralSingleItemVO generalSingleItemVO = new GeneralSingleItemVO(
+            GeneralDetailedItemVO generalDetailedItemVO = new GeneralDetailedItemVO(
                     index,
                     itemAttribute.getItemBrand(),
                     itemInfo.getItemName(),
                     itemInfo.getItemPic1(),
+                    itemInfo.getItemPic2(),
+                    itemInfo.getItemPic3(),
                     itemAttribute.getCurrentPrice(),
                     itemAttribute.getPreviousPrice(),
                     itemCategory.getTargetGroup(),
                     itemCategory.getUsageStyle()
             );
-            generalSingleItemVOS.add(generalSingleItemVO);
+            generalDetailedItemVOS.add(generalDetailedItemVO);
         }
-        itemListVO.setSingleItemVOList(generalSingleItemVOS);
+        itemListVO.setDetailedItemVOList(generalDetailedItemVOS);
         return itemListVO;
     }
 
@@ -73,25 +75,28 @@ public class ItemListServiceImpl implements ItemListService {
     @Cacheable(value = "findByBrand")
     public ItemListVO findItemsByBrand(String brand) {
         ItemListVO itemListVO = new ItemListVO();
-        List<GeneralSingleItemVO> generalSingleItemVOS = new ArrayList<>();
-        List<ItemAttribute> itemsByBrandList = itemAttributeRepository.findByItemBrand(TranslatorUtil.TransEnToCh(brand));
+        List<GeneralDetailedItemVO> generalDetailedItemVOS = new ArrayList<>();
+        List<ItemAttribute> itemsByBrandList = itemAttributeRepository.findByItemBrand
+                (TranslatorUtil.TransEnToCh(brand));
         for(ItemAttribute itemAttribute: itemsByBrandList) {
             Integer index = itemAttribute.getItemId();
             ItemInfo itemInfo = itemInfoRepository.findByItemId(index);
             ItemCategory itemCategory = itemCategoryRepository.findByItemId(index);
-            GeneralSingleItemVO generalSingleItemVO = new GeneralSingleItemVO(
+            GeneralDetailedItemVO generalDetailedItemVO = new GeneralDetailedItemVO(
                     index,
                     itemAttribute.getItemBrand(),
                     itemInfo.getItemName(),
                     itemInfo.getItemPic1(),
+                    itemInfo.getItemPic2(),
+                    itemInfo.getItemPic3(),
                     itemAttribute.getCurrentPrice(),
                     itemAttribute.getPreviousPrice(),
                     itemCategory.getTargetGroup(),
                     itemCategory.getUsageStyle()
             );
-            generalSingleItemVOS.add(generalSingleItemVO);
+            generalDetailedItemVOS.add(generalDetailedItemVO);
         }
-        itemListVO.setSingleItemVOList(generalSingleItemVOS);
+        itemListVO.setDetailedItemVOList(generalDetailedItemVOS);
         return itemListVO;
     }
 
@@ -99,34 +104,38 @@ public class ItemListServiceImpl implements ItemListService {
     @Cacheable(value = "findDiscountByCategory")
     public ItemListVO findDiscountByCategory(String group, String category) {
         ItemListVO itemListVO = new ItemListVO();
-        List<GeneralSingleItemVO> generalDiscountItemVOS = new ArrayList<>();
+        List<GeneralDetailedItemVO> generalDetailedItemVOS = new ArrayList<>();
         List<ItemAttribute> itemDiscount = itemAttributeRepository.findByPreviousPriceIsNotNull();
         ArrayList<Integer> discountId = new ArrayList<>();
         for(ItemAttribute itemAttribute: itemDiscount) {
             discountId.add(itemAttribute.getItemId());
         }
         List<ItemCategory> itemsDiscountCategory;
-        if(category.equals("all")) itemsDiscountCategory = itemCategoryRepository.findByTargetGroup(TranslatorUtil.TransEnToCh(group));
-        else itemsDiscountCategory = itemCategoryRepository.findByTargetGroupAndCategoryName(TranslatorUtil.TransEnToCh(group), TranslatorUtil.TransEnToCh(category));
+        if(category.equals("all")) itemsDiscountCategory = itemCategoryRepository.findByTargetGroup
+                (TranslatorUtil.TransEnToCh(group));
+        else itemsDiscountCategory = itemCategoryRepository.findByTargetGroupAndCategoryName
+                (TranslatorUtil.TransEnToCh(group), TranslatorUtil.TransEnToCh(category));
         for(ItemCategory itemCategory: itemsDiscountCategory) {
             Integer index = itemCategory.getItemId();
             if(discountId.contains(index)) {
                 ItemInfo itemInfo = itemInfoRepository.findByItemId(index);
                 ItemAttribute itemAttribute = itemAttributeRepository.findByItemId(index);
-                GeneralSingleItemVO generalDiscountItemVO = new GeneralSingleItemVO(
+                GeneralDetailedItemVO generalDetailedItemVO = new GeneralDetailedItemVO(
                         index,
                         itemAttribute.getItemBrand(),
                         itemInfo.getItemName(),
                         itemInfo.getItemPic1(),
+                        itemInfo.getItemPic2(),
+                        itemInfo.getItemPic3(),
                         itemAttribute.getCurrentPrice(),
                         itemAttribute.getPreviousPrice(),
                         itemCategory.getTargetGroup(),
                         itemCategory.getUsageStyle()
                 );
-                generalDiscountItemVOS.add(generalDiscountItemVO);
+                generalDetailedItemVOS.add(generalDetailedItemVO);
             }
         }
-        itemListVO.setSingleItemVOList(generalDiscountItemVOS);
+        itemListVO.setDetailedItemVOList(generalDetailedItemVOS);
         return itemListVO;
     }
 }

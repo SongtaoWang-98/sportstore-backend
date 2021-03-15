@@ -10,5 +10,5 @@ import java.util.List;
 @NoArgsConstructor
 public class ItemListVO {
     @JsonProperty("items")
-    private List<GeneralSingleItemVO> singleItemVOList;
+    private List<GeneralDetailedItemVO> detailedItemVOList;
 }

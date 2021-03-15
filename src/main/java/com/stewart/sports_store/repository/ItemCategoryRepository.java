@@ -7,9 +7,10 @@ import java.util.Collection;
 import java.util.List;
 
 public interface ItemCategoryRepository extends JpaRepository<ItemCategory, Integer> {
-    List<ItemCategory> findByTargetGroup(String targeGroup);
+    List<ItemCategory> findByTargetGroup(String targetGroup);
     List<ItemCategory> findByTargetGroupAndCategoryName(String targetGroup, String categoryName);
-    List<ItemCategory> findByTargetGroupAndCategoryNameAndUsageStyle(String targetGroup, String categoryName, String usateStyle);
+    List<ItemCategory> findByTargetGroupAndCategoryNameAndUsageStyle(String targetGroup, String categoryName, String usageStyle);
     ItemCategory findByItemId(Integer itemId);
     List<ItemCategory> findByCategoryNameNotIn(Collection<String> categoryName);
+    List<ItemCategory> findByTargetGroupInAndCategoryNameIn(Collection<String> targetGroup, Collection<String> categoryName);
 }
