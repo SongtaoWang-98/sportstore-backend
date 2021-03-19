@@ -9,6 +9,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class ItemListVO {
+    @JsonProperty("items_number")
+    Integer number;
     @JsonProperty("items")
     private List<GeneralDetailedItemVO> detailedItemVOList;
 }

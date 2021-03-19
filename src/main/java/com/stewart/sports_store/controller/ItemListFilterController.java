@@ -20,10 +20,10 @@ public class ItemListFilterController {
     @GetMapping("/filterByConditions")
     public ResultVO filterByConditions(String[] groups, String[] categories, String[] brands, String[] colors) {
         System.out.println("456");
-        List<String> groupList = Arrays.asList(groups);
-        List<String> categoryList = Arrays.asList(categories);
-        List<String> brandList = Arrays.asList(brands);
-        List<String> colorList = Arrays.asList(colors);
+        List<String> groupList = (groups == null ? null : Arrays.asList(groups));
+        List<String> categoryList = (categories == null ? null : Arrays.asList(categories));
+        List<String> brandList = (brands == null ? null : Arrays.asList(brands));
+        List<String> colorList = (colors == null ? null : Arrays.asList(colors));
         return ResultVOUtil.success(itemListFilterService.filterItemsByConditions(groupList, categoryList, brandList, colorList));
     }
 }

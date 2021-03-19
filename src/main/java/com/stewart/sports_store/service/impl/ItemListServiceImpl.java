@@ -49,7 +49,9 @@ public class ItemListServiceImpl implements ItemListService {
         else itemsByCategoryList = itemCategoryRepository.findByTargetGroupAndCategoryNameAndUsageStyle(
                 TranslatorUtil.TransEnToCh(group), TranslatorUtil.TransEnToCh(category),
                 TranslatorUtil.TransEnToCh(style));
+        int itemNumber = 0;
         for(ItemCategory itemCategory: itemsByCategoryList) {
+            itemNumber++;
             Integer index = itemCategory.getItemId();
             ItemInfo itemInfo = itemInfoRepository.findByItemId(index);
             ItemAttribute itemAttribute = itemAttributeRepository.findByItemId(index);
@@ -67,6 +69,7 @@ public class ItemListServiceImpl implements ItemListService {
             );
             generalDetailedItemVOS.add(generalDetailedItemVO);
         }
+        itemListVO.setNumber(itemNumber);
         itemListVO.setDetailedItemVOList(generalDetailedItemVOS);
         return itemListVO;
     }
@@ -78,7 +81,9 @@ public class ItemListServiceImpl implements ItemListService {
         List<GeneralDetailedItemVO> generalDetailedItemVOS = new ArrayList<>();
         List<ItemAttribute> itemsByBrandList = itemAttributeRepository.findByItemBrand
                 (TranslatorUtil.TransEnToCh(brand));
+        int itemNumber = 0;
         for(ItemAttribute itemAttribute: itemsByBrandList) {
+            itemNumber++;
             Integer index = itemAttribute.getItemId();
             ItemInfo itemInfo = itemInfoRepository.findByItemId(index);
             ItemCategory itemCategory = itemCategoryRepository.findByItemId(index);
@@ -96,6 +101,7 @@ public class ItemListServiceImpl implements ItemListService {
             );
             generalDetailedItemVOS.add(generalDetailedItemVO);
         }
+        itemListVO.setNumber(itemNumber);
         itemListVO.setDetailedItemVOList(generalDetailedItemVOS);
         return itemListVO;
     }
@@ -115,9 +121,11 @@ public class ItemListServiceImpl implements ItemListService {
                 (TranslatorUtil.TransEnToCh(group));
         else itemsDiscountCategory = itemCategoryRepository.findByTargetGroupAndCategoryName
                 (TranslatorUtil.TransEnToCh(group), TranslatorUtil.TransEnToCh(category));
+        int itemNumber = 0;
         for(ItemCategory itemCategory: itemsDiscountCategory) {
             Integer index = itemCategory.getItemId();
             if(discountId.contains(index)) {
+                itemNumber++;
                 ItemInfo itemInfo = itemInfoRepository.findByItemId(index);
                 ItemAttribute itemAttribute = itemAttributeRepository.findByItemId(index);
                 GeneralDetailedItemVO generalDetailedItemVO = new GeneralDetailedItemVO(
@@ -135,6 +143,7 @@ public class ItemListServiceImpl implements ItemListService {
                 generalDetailedItemVOS.add(generalDetailedItemVO);
             }
         }
+        itemListVO.setNumber(itemNumber);
         itemListVO.setDetailedItemVOList(generalDetailedItemVOS);
         return itemListVO;
     }

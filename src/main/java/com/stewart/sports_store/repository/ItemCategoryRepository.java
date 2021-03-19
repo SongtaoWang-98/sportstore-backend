@@ -12,5 +12,7 @@ public interface ItemCategoryRepository extends JpaRepository<ItemCategory, Inte
     List<ItemCategory> findByTargetGroupAndCategoryNameAndUsageStyle(String targetGroup, String categoryName, String usageStyle);
     ItemCategory findByItemId(Integer itemId);
     List<ItemCategory> findByCategoryNameNotIn(Collection<String> categoryName);
+    List<ItemCategory> findByCategoryNameIn(Collection<String> categoryName);
+    List<ItemCategory> findByTargetGroupIn(Collection<String> targetGroup);
     List<ItemCategory> findByTargetGroupInAndCategoryNameIn(Collection<String> targetGroup, Collection<String> categoryName);
 }

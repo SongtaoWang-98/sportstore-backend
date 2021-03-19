@@ -36,10 +36,34 @@ public class ItemListFilterServiceImpl implements ItemListFilterService {
                                               List<String> brands, List<String> colors) {
         ItemListVO itemListVO = new ItemListVO();
         List<GeneralDetailedItemVO> generalDetailedItemVOS = new ArrayList<>();
-        List<ItemAttribute> filterByAttributeList = itemAttributeRepository.findByItemBrandInAndItemColorIn
-                (TranslatorUtil_List.TransList(brands), TranslatorUtil_List.TransList(colors));
-        List<ItemCategory> filterByCategoryList = itemCategoryRepository.findByTargetGroupInAndCategoryNameIn
-                (TranslatorUtil_List.TransList(groups), TranslatorUtil_List.TransList(categories));
+        List<ItemCategory> filterByCategoryList;
+        if(groups != null && categories != null) {
+            filterByCategoryList = itemCategoryRepository.findByTargetGroupInAndCategoryNameIn
+                    (TranslatorUtil_List.TransList(groups), TranslatorUtil_List.TransList(categories));
+        }
+        else if(groups == null && categories != null) {
+            filterByCategoryList = itemCategoryRepository.findByCategoryNameIn(TranslatorUtil_List.TransList(categories));
+        }
+        else if(groups != null) {
+            filterByCategoryList = itemCategoryRepository.findByTargetGroupIn(TranslatorUtil_List.TransList(groups));
+        }
+        else {
+            filterByCategoryList = itemCategoryRepository.findAll();
+        }
+        List<ItemAttribute> filterByAttributeList;
+        if(brands != null && colors != null) {
+            filterByAttributeList = itemAttributeRepository.findByItemBrandInAndItemColorIn
+                    (TranslatorUtil_List.TransList(brands), TranslatorUtil_List.TransList(colors));
+        }
+        else if(brands == null && colors != null) {
+            filterByAttributeList = itemAttributeRepository.findByItemColorIn(TranslatorUtil_List.TransList(colors));
+        }
+        else if(brands != null) {
+            filterByAttributeList = itemAttributeRepository.findByItemBrandIn(TranslatorUtil_List.TransList(brands));
+        }
+        else {
+            filterByAttributeList = itemAttributeRepository.findAll();
+        }
         List<Integer> categoryId = new ArrayList<>();
         List<Integer> resultId = new ArrayList<>();
         for(ItemCategory itemCategory: filterByCategoryList) {
@@ -50,7 +74,9 @@ public class ItemListFilterServiceImpl implements ItemListFilterService {
                 resultId.add(itemAttribute.getItemId());
             }
         }
+        int itemNumber = 0;
         for(Integer id: resultId) {
+            itemNumber++;
             ItemInfo itemInfo = itemInfoRepository.findByItemId(id);
             ItemCategory itemCategory = itemCategoryRepository.findByItemId(id);
             ItemAttribute itemAttribute = itemAttributeRepository.findByItemId(id);
@@ -68,6 +94,7 @@ public class ItemListFilterServiceImpl implements ItemListFilterService {
             );
             generalDetailedItemVOS.add(generalDetailedItemVO);
         }
+        itemListVO.setNumber(itemNumber);
         itemListVO.setDetailedItemVOList(generalDetailedItemVOS);
         return itemListVO;
     }
