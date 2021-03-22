@@ -7,7 +7,7 @@ import com.stewart.sports_store.repository.ItemAttributeRepository;
 import com.stewart.sports_store.repository.ItemCategoryRepository;
 import com.stewart.sports_store.repository.ItemInfoRepository;
 import com.stewart.sports_store.service.ItemListService;
-import com.stewart.sports_store.util.TranslatorUtil;
+import com.stewart.sports_store.util.TranslatorUtil_List;
 import com.stewart.sports_store.vo.GeneralDetailedItemVO;
 import com.stewart.sports_store.vo.ItemListVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,31 +32,84 @@ public class ItemListServiceImpl implements ItemListService {
     private ItemInfoRepository itemInfoRepository;
 
     @Override
-    @Cacheable(value = "findByCategory")
-    public ItemListVO findItemsByCategory(String group, String category, String style) {
+    @Cacheable(value = "select")
+    public ItemListVO findItemsByConditions(List<String> groups, List<String> categories, List<String> styles,
+                                              List<String> brands, List<String> colors, Boolean discount) {
         ItemListVO itemListVO = new ItemListVO();
         List<GeneralDetailedItemVO> generalDetailedItemVOS = new ArrayList<>();
-        List<ItemCategory> itemsByCategoryList;
-        if(style.equals("all")) {
-            if(category.equals("all")) {
-                itemsByCategoryList = itemCategoryRepository.findByTargetGroup(TranslatorUtil.TransEnToCh(group));
+        List<ItemCategory> findByCategoryList = new ArrayList<>();
+        if(groups != null && categories != null && styles != null) {
+            findByCategoryList = itemCategoryRepository.findByTargetGroupInAndCategoryNameInAndUsageStyleIn(
+                    TranslatorUtil_List.TransList(groups),
+                    TranslatorUtil_List.TransList(categories),
+                    TranslatorUtil_List.TransList(styles));
+        }
+        if(styles == null) {
+            if(groups != null && categories != null) {
+                findByCategoryList = itemCategoryRepository.findByTargetGroupInAndCategoryNameIn
+                        (TranslatorUtil_List.TransList(groups), TranslatorUtil_List.TransList(categories));
+            }
+            else if(groups == null && categories != null) {
+                findByCategoryList = itemCategoryRepository.findByCategoryNameIn(TranslatorUtil_List.TransList(categories));
+            }
+            else if(groups != null ) {
+                findByCategoryList = itemCategoryRepository.findByTargetGroupIn(TranslatorUtil_List.TransList(groups));
+            }
+            else findByCategoryList = itemCategoryRepository.findAll();
+        }
+
+        List<ItemAttribute> findByAttributeList;
+        if(discount != null) {
+            if(brands != null && colors != null) {
+                findByAttributeList = itemAttributeRepository.findByItemBrandInAndItemColorInAndPreviousPriceIsNotNull(
+                        TranslatorUtil_List.TransList(brands), TranslatorUtil_List.TransList(colors));
+            }
+            else if(brands == null && colors != null) {
+                findByAttributeList = itemAttributeRepository.findByItemColorInAndPreviousPriceIsNotNull(
+                        TranslatorUtil_List.TransList(colors));
+            }
+            else if(brands != null) {
+                findByAttributeList = itemAttributeRepository.findByItemBrandInAndPreviousPriceIsNotNull(
+                        TranslatorUtil_List.TransList(brands));
             }
             else {
-                itemsByCategoryList = itemCategoryRepository.findByTargetGroupAndCategoryName(
-                        TranslatorUtil.TransEnToCh(group), TranslatorUtil.TransEnToCh(category));
+                findByAttributeList = itemAttributeRepository.findByPreviousPriceIsNotNull();
             }
         }
-        else itemsByCategoryList = itemCategoryRepository.findByTargetGroupAndCategoryNameAndUsageStyle(
-                TranslatorUtil.TransEnToCh(group), TranslatorUtil.TransEnToCh(category),
-                TranslatorUtil.TransEnToCh(style));
+        else {
+            if(brands != null && colors != null) {
+                findByAttributeList = itemAttributeRepository.findByItemBrandInAndItemColorIn
+                        (TranslatorUtil_List.TransList(brands), TranslatorUtil_List.TransList(colors));
+            }
+            else if(brands == null && colors != null) {
+                findByAttributeList = itemAttributeRepository.findByItemColorIn(TranslatorUtil_List.TransList(colors));
+            }
+            else if(brands != null) {
+                findByAttributeList = itemAttributeRepository.findByItemBrandIn(TranslatorUtil_List.TransList(brands));
+            }
+            else {
+                findByAttributeList = itemAttributeRepository.findAll();
+            }
+        }
+
+        List<Integer> categoryId = new ArrayList<>();
+        List<Integer> resultId = new ArrayList<>();
+        for(ItemCategory itemCategory: findByCategoryList) {
+            categoryId.add(itemCategory.getItemId());
+        }
+        for(ItemAttribute itemAttribute: findByAttributeList) {
+            if (categoryId.contains(itemAttribute.getItemId())) {
+                resultId.add(itemAttribute.getItemId());
+            }
+        }
         int itemNumber = 0;
-        for(ItemCategory itemCategory: itemsByCategoryList) {
+        for(Integer id: resultId) {
             itemNumber++;
-            Integer index = itemCategory.getItemId();
-            ItemInfo itemInfo = itemInfoRepository.findByItemId(index);
-            ItemAttribute itemAttribute = itemAttributeRepository.findByItemId(index);
+            ItemInfo itemInfo = itemInfoRepository.findByItemId(id);
+            ItemCategory itemCategory = itemCategoryRepository.findByItemId(id);
+            ItemAttribute itemAttribute = itemAttributeRepository.findByItemId(id);
             GeneralDetailedItemVO generalDetailedItemVO = new GeneralDetailedItemVO(
-                    index,
+                    id,
                     itemAttribute.getItemBrand(),
                     itemInfo.getItemName(),
                     itemInfo.getItemPic1(),
@@ -68,80 +121,6 @@ public class ItemListServiceImpl implements ItemListService {
                     itemCategory.getUsageStyle()
             );
             generalDetailedItemVOS.add(generalDetailedItemVO);
-        }
-        itemListVO.setNumber(itemNumber);
-        itemListVO.setDetailedItemVOList(generalDetailedItemVOS);
-        return itemListVO;
-    }
-
-    @Override
-    @Cacheable(value = "findByBrand")
-    public ItemListVO findItemsByBrand(String brand) {
-        ItemListVO itemListVO = new ItemListVO();
-        List<GeneralDetailedItemVO> generalDetailedItemVOS = new ArrayList<>();
-        List<ItemAttribute> itemsByBrandList = itemAttributeRepository.findByItemBrand
-                (TranslatorUtil.TransEnToCh(brand));
-        int itemNumber = 0;
-        for(ItemAttribute itemAttribute: itemsByBrandList) {
-            itemNumber++;
-            Integer index = itemAttribute.getItemId();
-            ItemInfo itemInfo = itemInfoRepository.findByItemId(index);
-            ItemCategory itemCategory = itemCategoryRepository.findByItemId(index);
-            GeneralDetailedItemVO generalDetailedItemVO = new GeneralDetailedItemVO(
-                    index,
-                    itemAttribute.getItemBrand(),
-                    itemInfo.getItemName(),
-                    itemInfo.getItemPic1(),
-                    itemInfo.getItemPic2(),
-                    itemInfo.getItemPic3(),
-                    itemAttribute.getCurrentPrice(),
-                    itemAttribute.getPreviousPrice(),
-                    itemCategory.getTargetGroup(),
-                    itemCategory.getUsageStyle()
-            );
-            generalDetailedItemVOS.add(generalDetailedItemVO);
-        }
-        itemListVO.setNumber(itemNumber);
-        itemListVO.setDetailedItemVOList(generalDetailedItemVOS);
-        return itemListVO;
-    }
-
-    @Override
-    @Cacheable(value = "findDiscountByCategory")
-    public ItemListVO findDiscountByCategory(String group, String category) {
-        ItemListVO itemListVO = new ItemListVO();
-        List<GeneralDetailedItemVO> generalDetailedItemVOS = new ArrayList<>();
-        List<ItemAttribute> itemDiscount = itemAttributeRepository.findByPreviousPriceIsNotNull();
-        ArrayList<Integer> discountId = new ArrayList<>();
-        for(ItemAttribute itemAttribute: itemDiscount) {
-            discountId.add(itemAttribute.getItemId());
-        }
-        List<ItemCategory> itemsDiscountCategory;
-        if(category.equals("all")) itemsDiscountCategory = itemCategoryRepository.findByTargetGroup
-                (TranslatorUtil.TransEnToCh(group));
-        else itemsDiscountCategory = itemCategoryRepository.findByTargetGroupAndCategoryName
-                (TranslatorUtil.TransEnToCh(group), TranslatorUtil.TransEnToCh(category));
-        int itemNumber = 0;
-        for(ItemCategory itemCategory: itemsDiscountCategory) {
-            Integer index = itemCategory.getItemId();
-            if(discountId.contains(index)) {
-                itemNumber++;
-                ItemInfo itemInfo = itemInfoRepository.findByItemId(index);
-                ItemAttribute itemAttribute = itemAttributeRepository.findByItemId(index);
-                GeneralDetailedItemVO generalDetailedItemVO = new GeneralDetailedItemVO(
-                        index,
-                        itemAttribute.getItemBrand(),
-                        itemInfo.getItemName(),
-                        itemInfo.getItemPic1(),
-                        itemInfo.getItemPic2(),
-                        itemInfo.getItemPic3(),
-                        itemAttribute.getCurrentPrice(),
-                        itemAttribute.getPreviousPrice(),
-                        itemCategory.getTargetGroup(),
-                        itemCategory.getUsageStyle()
-                );
-                generalDetailedItemVOS.add(generalDetailedItemVO);
-            }
         }
         itemListVO.setNumber(itemNumber);
         itemListVO.setDetailedItemVOList(generalDetailedItemVOS);

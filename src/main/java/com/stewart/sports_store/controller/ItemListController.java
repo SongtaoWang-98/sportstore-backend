@@ -6,6 +6,9 @@ import com.stewart.sports_store.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/itemList")
@@ -14,20 +17,17 @@ public class ItemListController {
     @Autowired
     private ItemListService itemListService;
 
-    @GetMapping("/findByCategory/{group}")
-    public ResultVO findByConditions(@PathVariable String group, @RequestParam(defaultValue = "all") String category,
-                                     @RequestParam(defaultValue = "all") String style) {
-        return ResultVOUtil.success(itemListService.findItemsByCategory(group,category,style));
-    }
-
-    @GetMapping("/findByBrand/{brand}")
-    public ResultVO findByBrand(@PathVariable String brand) {
-        return ResultVOUtil.success(itemListService.findItemsByBrand(brand));
-    }
-
-    @GetMapping("/findDiscountByCategory/{group}")
-    public ResultVO findByBrand(@PathVariable String group, @RequestParam(defaultValue = "all") String category) {
-        return ResultVOUtil.success(itemListService.findDiscountByCategory(group, category));
+    @GetMapping()
+    public ResultVO findByConditions(String[] groups, String[] categories, String[] styles,
+                                     String[] brands, String[] colors, Boolean discount) {
+        System.out.println("456");
+        List<String> groupList = (groups == null ? null : Arrays.asList(groups));
+        List<String> categoryList = (categories == null ? null : Arrays.asList(categories));
+        List<String> styleList = (styles == null ? null : Arrays.asList(styles));
+        List<String> brandList = (brands == null ? null : Arrays.asList(brands));
+        List<String> colorList = (colors == null ? null : Arrays.asList(colors));
+        return ResultVOUtil.success(itemListService.findItemsByConditions(groupList, categoryList, styleList,
+                brandList, colorList, discount));
     }
 
 }

@@ -12,8 +12,11 @@ public interface ItemAttributeRepository extends JpaRepository<ItemAttribute,Int
     List<ItemAttribute> getByOrderByUpdateTimeDesc();
     List<ItemAttribute> getByOrderByNumberSaleDesc();
     List<ItemAttribute> findByPreviousPriceIsNotNull();
-    List<ItemAttribute> findByItemBrand(String itemBrand);
     List<ItemAttribute> findByItemBrandIn(Collection<String> itemBrand);
+    List<ItemAttribute> findByItemBrandInAndPreviousPriceIsNotNull(Collection<String> itemBrand);
     List<ItemAttribute> findByItemColorIn(Collection<String> itemColor);
+    List<ItemAttribute> findByItemColorInAndPreviousPriceIsNotNull(Collection<String> itemColor);
     List<ItemAttribute> findByItemBrandInAndItemColorIn(Collection<String> itemBrand, Collection<String> itemColor);
+    List<ItemAttribute> findByItemBrandInAndItemColorInAndPreviousPriceIsNotNull(Collection<String> itemBrand, Collection<String> itemColor);
+
 }

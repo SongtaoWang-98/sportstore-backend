@@ -2,9 +2,10 @@ package com.stewart.sports_store.service;
 
 import com.stewart.sports_store.vo.ItemListVO;
 
+import java.util.List;
+
 
 public interface ItemListService {
-     ItemListVO findItemsByCategory(String group, String category, String style);
-     ItemListVO findItemsByBrand(String brand);
-     ItemListVO findDiscountByCategory(String group, String category);
+     ItemListVO findItemsByConditions(List<String> groups, List<String> categories, List<String> styles,
+                                      List<String> brands, List<String> colors, Boolean discount);
 }

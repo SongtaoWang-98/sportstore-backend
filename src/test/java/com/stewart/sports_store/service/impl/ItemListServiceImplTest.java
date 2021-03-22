@@ -14,9 +14,9 @@ class ItemListServiceImplTest {
     @Autowired
     ItemListService itemListService;
 
-    @Test
-    void test() {
-        ItemListVO itemListVO = itemListService.findItemsByCategory("men", "shoes", "all");
-        int i = 0;
-    }
+//    @Test
+//    void test() {
+//        ItemListVO itemListVO = itemListService.findItemsByCategory("men", "shoes", "all");
+//        int i = 0;
+//    }
 }
