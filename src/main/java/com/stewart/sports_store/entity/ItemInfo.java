@@ -1,7 +1,6 @@
 package com.stewart.sports_store.entity;
 
 import lombok.Data;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -33,8 +34,16 @@ public class DetailedInformationVO {
     private String itemSize;
     @JsonProperty("price")
     private BigDecimal currentPrice;
-    @JsonProperty("previousPrice")
+    @JsonProperty("previous_price")
     private BigDecimal previousPrice;
+    @JsonProperty("stock")
+    private Integer numberStock;
+    @JsonProperty("sale")
+    private Integer numberSale;
     @JsonProperty("brand")
     private String itemBrand;
+    @JsonProperty("rating")
+    private Double itemRating;
+    @JsonProperty("related_items")
+    private List<GeneralSingleItemVO> relatedItems;
 }
