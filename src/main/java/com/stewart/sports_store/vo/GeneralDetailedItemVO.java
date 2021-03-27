@@ -25,7 +25,7 @@ public class GeneralDetailedItemVO {
     private String itemPic3;
     @JsonProperty("price")
     private BigDecimal currentPrice;
-    @JsonProperty("previousPrice")
+    @JsonProperty("previous_price")
     private BigDecimal previousPrice;
     @JsonProperty("group")
     private String targetGroup;
