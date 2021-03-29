@@ -1,13 +1,10 @@
 package com.stewart.sports_store.security;
 
 import com.alibaba.fastjson.JSON;
-import com.stewart.sports_store.enums.ResultCode;
+import com.stewart.sports_store.enums.LoginCode;
 import com.stewart.sports_store.util.ResultVOUtil;
 import com.stewart.sports_store.vo.ResultVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +20,7 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
     public void onAuthenticationSuccess(
             HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
             Authentication authentication) throws IOException, ServletException {
-        ResultVO result = ResultVOUtil.success(ResultCode.SUCCESS);
+        ResultVO result = ResultVOUtil.success(LoginCode.SUCCESS);
         httpServletResponse.getWriter().write(JSON.toJSONString(result));
     }
 }

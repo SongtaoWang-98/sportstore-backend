@@ -1,7 +1,7 @@
 package com.stewart.sports_store.security;
 
 import com.alibaba.fastjson.JSON;
-import com.stewart.sports_store.enums.ResultCode;
+import com.stewart.sports_store.enums.LoginCode;
 import com.stewart.sports_store.util.ResultVOUtil;
 import com.stewart.sports_store.vo.ResultVO;
 import org.springframework.security.core.Authentication;
@@ -18,7 +18,7 @@ public class CustomizeLogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                 Authentication authentication) throws IOException, ServletException {
-        ResultVO result = ResultVOUtil.success(ResultCode.SUCCESS);
+        ResultVO result = ResultVOUtil.success(LoginCode.SUCCESS);
         httpServletResponse.getWriter().write(JSON.toJSONString(result));
     }
 }

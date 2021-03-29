@@ -1,6 +1,5 @@
 package com.stewart.sports_store.util;
 
-import com.stewart.sports_store.enums.ResultCode;
 import com.stewart.sports_store.vo.ResultVO;
 
 public class ResultVOUtil {
@@ -12,11 +11,11 @@ public class ResultVOUtil {
         return resultVO;
     }
 
-    public static ResultVO fail(ResultCode resultCode){
+    public static ResultVO fail(Object data){
         ResultVO resultVO = new ResultVO();
         resultVO.setCode(1);
         resultVO.setMsg("fail");
-        resultVO.setData(resultCode);
+        resultVO.setData(data);
         return resultVO;
     }
 }

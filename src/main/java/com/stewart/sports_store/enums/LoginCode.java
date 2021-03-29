@@ -1,6 +1,9 @@
 package com.stewart.sports_store.enums;
 
-public enum ResultCode {
+import lombok.Getter;
+
+@Getter
+public enum LoginCode {
 
     /* 成功 */
     SUCCESS(200, "成功"),
@@ -32,34 +35,9 @@ public enum ResultCode {
     private Integer code;
     private String message;
 
-    ResultCode(Integer code, String message) {
+    LoginCode(Integer code, String message) {
         this.code = code;
         this.message = message;
-    }
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public static String getMessageByCode(Integer code) {
-        for (ResultCode ele : values()) {
-            if (ele.getCode().equals(code)) {
-                return ele.getMessage();
-            }
-        }
-        return null;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.stewart.sports_store.security;
 
 import com.alibaba.fastjson.JSON;
-import com.stewart.sports_store.enums.ResultCode;
+import com.stewart.sports_store.enums.LoginCode;
 import com.stewart.sports_store.util.ResultVOUtil;
 import com.stewart.sports_store.vo.ResultVO;
 import org.springframework.security.authentication.*;
@@ -22,25 +22,25 @@ public class CustomizeAuthenticationFailureHandler implements AuthenticationFail
         ResultVO result = null;
         if (e instanceof AccountExpiredException) {
             //账号过期
-            result = ResultVOUtil.fail(ResultCode.USER_ACCOUNT_EXPIRED);
+            result = ResultVOUtil.fail(LoginCode.USER_ACCOUNT_EXPIRED);
         } else if (e instanceof BadCredentialsException) {
             //密码错误
-            result = ResultVOUtil.fail(ResultCode.USER_CREDENTIALS_ERROR);
+            result = ResultVOUtil.fail(LoginCode.USER_CREDENTIALS_ERROR);
         } else if (e instanceof CredentialsExpiredException) {
             //密码过期
-            result = ResultVOUtil.fail(ResultCode.USER_CREDENTIALS_EXPIRED);
+            result = ResultVOUtil.fail(LoginCode.USER_CREDENTIALS_EXPIRED);
         } else if (e instanceof DisabledException) {
             //账号不可用
-            result = ResultVOUtil.fail(ResultCode.USER_ACCOUNT_DISABLE);
+            result = ResultVOUtil.fail(LoginCode.USER_ACCOUNT_DISABLE);
         } else if (e instanceof LockedException) {
             //账号锁定
-            result = ResultVOUtil.fail(ResultCode.USER_ACCOUNT_LOCKED);
+            result = ResultVOUtil.fail(LoginCode.USER_ACCOUNT_LOCKED);
         } else if (e instanceof InternalAuthenticationServiceException) {
             //用户不存在
-            result = ResultVOUtil.fail(ResultCode.USER_ACCOUNT_NOT_EXIST);
+            result = ResultVOUtil.fail(LoginCode.USER_ACCOUNT_NOT_EXIST);
         }else{
             //其他错误
-            result = ResultVOUtil.fail(ResultCode.COMMON_FAIL);
+            result = ResultVOUtil.fail(LoginCode.COMMON_FAIL);
         }
 
         httpServletResponse.getWriter().write(JSON.toJSONString(result));

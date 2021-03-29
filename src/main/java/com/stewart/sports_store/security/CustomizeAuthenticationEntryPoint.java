@@ -1,7 +1,7 @@
 package com.stewart.sports_store.security;
 
 import com.alibaba.fastjson.JSON;
-import com.stewart.sports_store.enums.ResultCode;
+import com.stewart.sports_store.enums.LoginCode;
 import com.stewart.sports_store.util.ResultVOUtil;
 import com.stewart.sports_store.vo.ResultVO;
 import org.springframework.security.core.AuthenticationException;
@@ -18,7 +18,7 @@ public class CustomizeAuthenticationEntryPoint implements AuthenticationEntryPoi
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                          AuthenticationException e) throws IOException, ServletException, IOException {
-        ResultVO result = ResultVOUtil.fail(ResultCode.USER_NOT_LOGIN);
+        ResultVO result = ResultVOUtil.fail(LoginCode.USER_NOT_LOGIN);
         httpServletResponse.getWriter().write(JSON.toJSONString(result));
     }
 }
