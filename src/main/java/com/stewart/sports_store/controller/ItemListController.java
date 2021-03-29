@@ -17,10 +17,10 @@ public class ItemListController {
     @Autowired
     private ItemListService itemListService;
 
-    @GetMapping()
+    @GetMapping
     public ResultVO findByConditions(String[] groups, String[] categories, String[] styles,
                                      String[] brands, String[] colors, Boolean discount) {
-        System.out.println("456");
+
         List<String> groupList = (groups == null ? null : Arrays.asList(groups));
         List<String> categoryList = (categories == null ? null : Arrays.asList(categories));
         List<String> styleList = (styles == null ? null : Arrays.asList(styles));
