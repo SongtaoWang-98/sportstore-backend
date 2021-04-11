@@ -16,12 +16,10 @@ class RegisterServiceImplTest {
     @Test
     void test() {
         RegisterDTO dto = new RegisterDTO(
-                "444",
+                "1234",
                 "4",
-                "5",
-                "5"
+                "123"
         );
         registerService.register(dto);
     }
-
 }

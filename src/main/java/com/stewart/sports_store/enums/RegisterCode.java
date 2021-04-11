@@ -4,12 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum RegisterCode {
-    SUCCESS(500,"成功"),
+    SUCCESS(200,"成功"),
 
-    USERNAME_NULL(1001,"用户名为空"),
-    TEL_NULL(1002,"电话为空"),
-    INVALID_TEL(1002,"电话号码格式有误"),
-    PASSWORD_DIFFERENT(1003,"两次密码不同"),
+    USERNAME_EXISTS(1001,"用户名已存在"),
+    TEL_EXISTS(1002,"手机号已被注册"),
 
     FAIL(2001,"注册失败");
 

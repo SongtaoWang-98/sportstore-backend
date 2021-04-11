@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@CrossOrigin
+//@CrossOrigin
 @RequestMapping("/home")
 public class HomeController {
     @Autowired
@@ -19,7 +19,6 @@ public class HomeController {
 
     @GetMapping
     public ResultVO index() {
-        System.out.println("123");
         return ResultVOUtil.success(homeService.findHomeVO());
     }
 

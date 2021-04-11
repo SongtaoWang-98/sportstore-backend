@@ -17,17 +17,19 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Override
     public RegisterCode register(RegisterDTO registerDTO) {
-        if(registerDTO.getUserName() == null) return RegisterCode.USERNAME_NULL;
-        else if (registerDTO.getUserTel() == null) return RegisterCode.TEL_NULL;
-        else if (!registerDTO.getPasscode().equals(registerDTO.getConfirm())) return RegisterCode.PASSWORD_DIFFERENT;
-        else{
-            UserInfo userInfo = new UserInfo();
-            userInfo.setUserName(registerDTO.getUserName());
-            userInfo.setUserTel(registerDTO.getUserTel());
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            userInfo.setUserPassword(passwordEncoder.encode(registerDTO.getPasscode()));
-            userInfoRepository.save(userInfo);
-            return RegisterCode.SUCCESS;
-        }
+        UserInfo u = userInfoRepository.findByUserName(registerDTO.getUserName());
+        if(u != null) return RegisterCode.USERNAME_EXISTS;
+
+        UserInfo ut = userInfoRepository.findByUserTel(registerDTO.getUserTel());
+        if(ut != null) return RegisterCode.TEL_EXISTS;
+
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserName(registerDTO.getUserName());
+        userInfo.setUserTel(registerDTO.getUserTel());
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        userInfo.setUserPassword(passwordEncoder.encode(registerDTO.getPasscode()));
+        userInfoRepository.save(userInfo);
+        return RegisterCode.SUCCESS;
+
     }
 }
