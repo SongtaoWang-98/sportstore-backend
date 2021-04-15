@@ -45,7 +45,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutSuccessHandler(logoutSuccessHandler)
                     .deleteCookies("JSESSIONID")//登出之后删除cookie
                 .and().authorizeRequests()
-                    .antMatchers("/addBasket").hasAnyAuthority()
+                    .antMatchers("/cart/**").hasAuthority("BestBuyer")
+                    .antMatchers("/payment/**").hasAuthority("BestBuyer")
+                    .antMatchers("/order/**").hasAuthority("BestBuyer")
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .and().exceptionHandling()
                     .authenticationEntryPoint(authenticationEntryPoint)

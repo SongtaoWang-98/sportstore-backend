@@ -2,7 +2,6 @@ package com.stewart.sports_store.security;
 
 import com.stewart.sports_store.entity.UserInfo;
 import com.stewart.sports_store.repository.UserInfoRepository;
-import com.stewart.sports_store.service.ItemListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,6 +29,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         return new User(userInfo.getUserName(), userInfo.getUserPassword(),
                 true, true, true, true,
-                new ArrayList<GrantedAuthority>(Collections.singleton(new SimpleGrantedAuthority("Login User"))));
+                new ArrayList<GrantedAuthority>(Collections.singleton(new SimpleGrantedAuthority("BestBuyer"))));
     }
 }
