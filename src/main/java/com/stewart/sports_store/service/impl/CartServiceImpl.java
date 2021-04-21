@@ -1,13 +1,11 @@
 package com.stewart.sports_store.service.impl;
 
 import com.stewart.sports_store.entity.ItemAttribute;
+import com.stewart.sports_store.entity.ItemCategory;
 import com.stewart.sports_store.entity.ItemInfo;
 import com.stewart.sports_store.entity.UserCart;
 import com.stewart.sports_store.enums.StatusCode;
-import com.stewart.sports_store.repository.ItemAttributeRepository;
-import com.stewart.sports_store.repository.ItemInfoRepository;
-import com.stewart.sports_store.repository.UserCartRepository;
-import com.stewart.sports_store.repository.UserInfoRepository;
+import com.stewart.sports_store.repository.*;
 import com.stewart.sports_store.service.CartService;
 import com.stewart.sports_store.vo.CartVO;
 import com.stewart.sports_store.vo.SingleCartVO;
@@ -32,6 +30,9 @@ public class CartServiceImpl implements CartService {
     private ItemAttributeRepository itemAttributeRepository;
 
     @Autowired
+    private ItemCategoryRepository itemCategoryRepository;
+
+    @Autowired
     private UserInfoRepository userInfoRepository;
 
 
@@ -39,7 +40,7 @@ public class CartServiceImpl implements CartService {
     public StatusCode addItem(Integer itemId) {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         Integer userId = userInfoRepository.findByUserName(userName).getUserId();
-
+        System.out.println(userId);
         Integer stock = itemAttributeRepository.findByItemId(itemId).getNumberStock();
         if(stock > 0) {
             if(userCartRepository.findByUserIdAndItemId(userId, itemId) != null) {
@@ -86,6 +87,7 @@ public class CartServiceImpl implements CartService {
         for(UserCart userCart: userCartList) {
             ItemInfo itemInfo = itemInfoRepository.findByItemId(userCart.getItemId());
             ItemAttribute itemAttribute = itemAttributeRepository.findByItemId(userCart.getItemId());
+            ItemCategory itemCategory = itemCategoryRepository.findByItemId(userCart.getItemId());
             if(itemAttribute.getNumberStock() < userCart.getItemNum()) {
                 if(userCart.getIsValid()) {
                     userCart.setIsValid(false);
@@ -106,12 +108,17 @@ public class CartServiceImpl implements CartService {
                     itemInfo.getItemPic1(),
                     itemAttribute.getCurrentPrice(),
                     itemAttribute.getPreviousPrice(),
+                    itemCategory.getTargetGroup(),
+                    itemCategory.getUsageStyle(),
+                    itemAttribute.getItemColor(),
+                    itemAttribute.getItemSize(),
                     userCart.getItemNum(),
                     userCart.getIsValid()
             ));
         }
         CartVO cartVO = new CartVO();
         cartVO.setCartItemVOList(singleCartVOList);
+        cartVO.setGeneralSimpleItemVOList(null);
         return cartVO;
     }
 }

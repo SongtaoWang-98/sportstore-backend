@@ -35,6 +35,7 @@ public class PaymentServiceImpl implements PaymentService {
         paymentInfo.setProvince(paymentDTO.getProvince());
         paymentInfo.setCity(paymentDTO.getCity());
         paymentInfo.setDistrict(paymentDTO.getDistrict());
+        paymentInfo.setDetailedAddress(paymentDTO.getAddress());
         paymentInfo.setPaymentTel(paymentDTO.getTel());
         paymentInfoRepository.save(paymentInfo);
         return StatusCode.SUCCESS;
@@ -83,15 +84,15 @@ public class PaymentServiceImpl implements PaymentService {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         Integer userId = userInfoRepository.findByUserName(userName).getUserId();
         List<PaymentInfo> paymentInfoList = paymentInfoRepository.findByUserId(userId);
-        List<SinglePaymentInfoVO> paymentInfoVOList = new ArrayList<>();
+        List<SinglePaymentInfoVO> singlePaymentInfoVOList = new ArrayList<>();
         for(PaymentInfo paymentInfo: paymentInfoList) {
-            paymentInfoVOList.add(new SinglePaymentInfoVO(
+            singlePaymentInfoVOList.add(new SinglePaymentInfoVO(
                     paymentInfo.getPaymentId(),
                     paymentInfo.getFamilyName() + paymentInfo.getGivenName(),
-                    paymentInfo.getProvince() + paymentInfo.getCity() + paymentInfo.getDistrict() +
+                    paymentInfo.getProvince() + paymentInfo.getCity() + paymentInfo.getDistrict(),
                             paymentInfo.getDetailedAddress(),
                     paymentInfo.getPaymentTel()));
         }
-        return new PaymentInfoVO(paymentInfoVOList);
+        return new PaymentInfoVO(singlePaymentInfoVOList);
     }
 }

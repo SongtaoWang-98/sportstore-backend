@@ -21,7 +21,7 @@ public class RegisterController {
     public ResultVO register(@RequestBody RegisterDTO infoForm) {
         RegisterCode result = registerService.register(infoForm);
         if(result.getCode() == 200) {
-            return ResultVOUtil.success(infoForm.getUserName());
+            return ResultVOUtil.success(result.getMsg());
         }
         else {
             System.out.println(ResultVOUtil.fail(result.getMsg()));

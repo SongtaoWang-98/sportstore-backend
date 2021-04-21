@@ -25,6 +25,14 @@ public class SingleCartVO {
     private BigDecimal currentPrice;
     @JsonProperty("previous_price")
     private BigDecimal previousPrice;
+    @JsonProperty("group")
+    private String group;
+    @JsonProperty("style")
+    private String style;
+    @JsonProperty("color")
+    private String color;
+    @JsonProperty("size")
+    private String size;
     @JsonProperty("num")
     private Integer itemNum;
     @JsonProperty("valid")

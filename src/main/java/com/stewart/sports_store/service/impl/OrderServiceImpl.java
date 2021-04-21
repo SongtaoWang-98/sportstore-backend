@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
         if(orderItemsList == null) i = 1;
         else i = orderItemsList.get(0).getItemsId() + 1;
 
-        List<OrderItemDTO> orderItemDTOList = orderDTO.getOrderItemDTOList();
+        List<OrderItemDTO> orderItemDTOList = orderDTO.getItemDTOS();
         for(OrderItemDTO orderItemDTO: orderItemDTOList) {
             OrderItems orderItems = new OrderItems();
             orderItems.setItemsId(i);

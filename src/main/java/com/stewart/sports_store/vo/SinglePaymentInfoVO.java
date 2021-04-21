@@ -13,8 +13,10 @@ public class SinglePaymentInfoVO {
     private Integer paymentId;
     @JsonProperty("name")
     private String paymentName;
-    @JsonProperty("address")
-    private String paymentAddress;
+    @JsonProperty("address1")
+    private String paymentAddress1;
+    @JsonProperty("address2")
+    private String paymentAddress2;
     @JsonProperty("tel")
     private String paymentTel;
 }
