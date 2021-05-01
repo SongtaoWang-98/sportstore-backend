@@ -4,11 +4,15 @@ import com.stewart.sports_store.dto.PaymentDTO;
 import com.stewart.sports_store.enums.StatusCode;
 import com.stewart.sports_store.service.PaymentService;
 import com.stewart.sports_store.util.ResultVOUtil;
+import com.stewart.sports_store.vo.PayingItemsVO;
 import com.stewart.sports_store.vo.PaymentInfoVO;
 import com.stewart.sports_store.vo.ResultVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/payment")
@@ -53,5 +57,12 @@ public class PaymentController {
     public ResultVO showPaymentList() {
         PaymentInfoVO paymentInfoVO = paymentService.showPaymentInfo();
         return ResultVOUtil.success(paymentInfoVO);
+    }
+
+    @GetMapping("/payingItems")
+    public ResultVO showPayingItems(Integer[] cartIds) {
+        List<Integer> cartIdList = (cartIds == null ? null : Arrays.asList(cartIds));
+        PayingItemsVO payingItemsVO = paymentService.showPayingItems(cartIdList);
+        return ResultVOUtil.success(payingItemsVO);
     }
 }

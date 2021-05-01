@@ -35,7 +35,6 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private UserInfoRepository userInfoRepository;
 
-
     @Override
     public StatusCode addItem(Integer itemId) {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -52,6 +51,7 @@ public class CartServiceImpl implements CartService {
                 userCart.setItemId(itemId);
                 userCart.setItemNum(1);
                 userCart.setIsValid(true);
+                userCart.setIsPaid(false);
                 userCartRepository.save(userCart);
                 return StatusCode.SUCCESS;
             }
@@ -61,7 +61,15 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public StatusCode deleteItem(Integer cartId) {
-        userCartRepository.deleteById(cartId);
+        userCartRepository.deleteByCartId(cartId);
+        return StatusCode.SUCCESS;
+    }
+
+    @Override
+    public StatusCode deleteAll() {
+        Integer userId = userInfoRepository
+                .findByUserName(SecurityContextHolder.getContext().getAuthentication().getName()).getUserId();
+        userCartRepository.deleteAllByUserId(userId);
         return StatusCode.SUCCESS;
     }
 
@@ -82,8 +90,9 @@ public class CartServiceImpl implements CartService {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         Integer userId = userInfoRepository.findByUserName(userName).getUserId();
 
-        List<UserCart> userCartList = userCartRepository.findByUserId(userId);
+        List<UserCart> userCartList = userCartRepository.findByUserIdAndIsPaid(userId, false);
         List<SingleCartVO> singleCartVOList = new ArrayList<>();
+        BigDecimal totalPrice = BigDecimal.valueOf(0);
         for(UserCart userCart: userCartList) {
             ItemInfo itemInfo = itemInfoRepository.findByItemId(userCart.getItemId());
             ItemAttribute itemAttribute = itemAttributeRepository.findByItemId(userCart.getItemId());
@@ -115,10 +124,13 @@ public class CartServiceImpl implements CartService {
                     userCart.getItemNum(),
                     userCart.getIsValid()
             ));
+            totalPrice = totalPrice.add(itemAttribute.getCurrentPrice()
+                    .multiply(BigDecimal.valueOf(userCart.getItemNum())));
         }
         CartVO cartVO = new CartVO();
         cartVO.setCartItemVOList(singleCartVOList);
         cartVO.setGeneralSimpleItemVOList(null);
+        cartVO.setTotalPrice(totalPrice);
         return cartVO;
     }
 }

@@ -1,6 +1,5 @@
 package com.stewart.sports_store.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -15,6 +14,5 @@ public class OrderItems {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer itemsId;
-    private Integer itemId;
-    private Integer num;
+    private Integer cartId;
 }

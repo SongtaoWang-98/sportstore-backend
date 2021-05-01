@@ -17,4 +17,5 @@ public class UserCart {
     private Integer itemId;
     private Integer itemNum;
     private Boolean isValid;
+    private Boolean isPaid;
 }

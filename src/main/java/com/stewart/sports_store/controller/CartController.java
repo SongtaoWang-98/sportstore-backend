@@ -1,6 +1,5 @@
 package com.stewart.sports_store.controller;
 
-
 import com.stewart.sports_store.enums.StatusCode;
 import com.stewart.sports_store.service.CartService;
 import com.stewart.sports_store.util.ResultVOUtil;
@@ -29,6 +28,11 @@ public class CartController {
     @PutMapping("/delete")
     public ResultVO deleteInCart(Integer cartId) {
         return ResultVOUtil.success(cartService.deleteItem(cartId));
+    }
+
+    @PutMapping("/deleteAll")
+    public ResultVO deleteAll() {
+        return ResultVOUtil.success(cartService.deleteAll());
     }
 
     @PutMapping("/update")

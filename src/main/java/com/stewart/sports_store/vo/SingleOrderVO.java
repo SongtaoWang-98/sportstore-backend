@@ -26,9 +26,9 @@ public class SingleOrderVO {
     @JsonProperty("total_price")
     private BigDecimal totalPrice;
     @JsonProperty("create_time")
-    private Date createTime;
+    private String createTime;
     @JsonProperty("arrival_time")
-    private Date arrivalTime;
+    private String arrivalTime;
     @JsonProperty("status")
     private String currentStatus;
 }
