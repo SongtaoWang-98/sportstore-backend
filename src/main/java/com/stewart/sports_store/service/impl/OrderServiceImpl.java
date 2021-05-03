@@ -1,5 +1,6 @@
 package com.stewart.sports_store.service.impl;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.stewart.sports_store.dto.OrderDTO;
 import com.stewart.sports_store.entity.*;
 import com.stewart.sports_store.enums.StatusCode;
@@ -36,10 +37,16 @@ public class OrderServiceImpl implements OrderService {
     private ItemInfoRepository itemInfoRepository;
 
     @Autowired
+    private ItemCategoryRepository itemCategoryRepository;
+
+    @Autowired
     private UserCartRepository userCartRepository;
 
+    @Autowired
+    private PaymentInfoRepository paymentInfoRepository;
+
     @Override
-    public StatusCode createOrder(OrderDTO orderDTO) {
+    public OrderSuccessVO createOrder(OrderDTO orderDTO) {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         Integer userId = userInfoRepository.findByUserName(userName).getUserId();
         List<OrderItems> orderItemsList = orderItemsRepository.getByOrderByItemsIdDesc();
@@ -48,15 +55,21 @@ public class OrderServiceImpl implements OrderService {
         else newItemsId = orderItemsList.get(0).getItemsId() + 1;
         BigDecimal itemsPrice = BigDecimal.valueOf(0);
         for(Integer cartId: orderDTO.getCartIds()) {
+            ItemAttribute itemAttribute = itemAttributeRepository.
+                    findByItemId(userCartRepository.findByCartId(cartId).getItemId());
             OrderItems orderItems = new OrderItems();
             orderItems.setItemsId(newItemsId);
             orderItems.setCartId(cartId);
             orderItemsRepository.save(orderItems);
-            itemsPrice = itemsPrice.add(itemAttributeRepository.findByItemId(
-                    userCartRepository.findByCartId(cartId).getItemId()).getCurrentPrice());
+            itemsPrice = itemsPrice.add(itemAttribute.getCurrentPrice().
+                    multiply(BigDecimal.valueOf(userCartRepository.findByCartId(cartId).getItemNum())));
             UserCart userCart = userCartRepository.findByCartId(cartId);
             userCart.setIsPaid(true);
             userCartRepository.save(userCart);
+
+            itemAttribute.setNumberStock(itemAttribute.getNumberStock() - userCart.getItemNum());
+            itemAttribute.setNumberSale(itemAttribute.getNumberSale() + userCart.getItemNum());
+            itemAttributeRepository.save(itemAttribute);
         }
         BigDecimal deliveryPrice =
                 (orderDTO.getDeliveryType().equals("普通达")?BigDecimal.valueOf(0):BigDecimal.valueOf(30));
@@ -70,7 +83,38 @@ public class OrderServiceImpl implements OrderService {
         orderInfo.setDeliveryPrice(deliveryPrice);
         orderInfo.setPaymentMethod(orderDTO.getPaymentMethod());
         orderInfoRepository.save(orderInfo);
-        return StatusCode.SUCCESS;
+
+        List<GeneralSingleItemVO> relatedItems = new ArrayList<>();
+        long itemsNumber = itemInfoRepository.count();
+        for(int i = 0; i < 6; i++) {
+            Integer itemId = (userCartRepository.findByCartId(orderDTO.getCartIds()[0]).getItemId() + i)
+                    % (int) itemsNumber;
+            ItemAttribute itemAttribute = itemAttributeRepository.findByItemId(itemId);
+            ItemInfo itemInfo = itemInfoRepository.findByItemId(itemId);
+            ItemCategory itemCategory = itemCategoryRepository.findByItemId(itemId);
+            relatedItems.add(new GeneralSingleItemVO(
+                    itemId,
+                    itemAttribute.getItemBrand(),
+                    itemInfo.getItemName(),
+                    itemInfo.getItemPic1(),
+                    itemAttribute.getCurrentPrice(),
+                    itemAttribute.getPreviousPrice(),
+                    itemCategory.getTargetGroup(),
+                    itemCategory.getUsageStyle()
+            ));
+        }
+        PaymentInfo paymentInfo = paymentInfoRepository.findByPaymentId(orderDTO.getPaymentId());
+        return new OrderSuccessVO(
+                orderInfoRepository.findByItemsId(newItemsId).getOrderId(),
+                true,
+                orderDTO.getPaymentMethod(),
+                itemsPrice.add(deliveryPrice),
+                paymentInfo.getProvince() + paymentInfo.getCity() +
+                        paymentInfo.getDistrict() + paymentInfo.getDetailedAddress(),
+                orderDTO.getDeliveryType(),
+                relatedItems
+        );
+
     }
 
     @Override

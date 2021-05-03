@@ -8,16 +8,19 @@ import com.stewart.sports_store.enums.StatusCode;
 import com.stewart.sports_store.repository.*;
 import com.stewart.sports_store.service.CartService;
 import com.stewart.sports_store.vo.CartVO;
+import com.stewart.sports_store.vo.GeneralSingleItemVO;
 import com.stewart.sports_store.vo.SingleCartVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class CartServiceImpl implements CartService {
 
     @Autowired
@@ -39,10 +42,9 @@ public class CartServiceImpl implements CartService {
     public StatusCode addItem(Integer itemId) {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         Integer userId = userInfoRepository.findByUserName(userName).getUserId();
-        System.out.println(userId);
         Integer stock = itemAttributeRepository.findByItemId(itemId).getNumberStock();
         if(stock > 0) {
-            if(userCartRepository.findByUserIdAndItemId(userId, itemId) != null) {
+            if(userCartRepository.findByUserIdAndItemIdAndIsPaid(userId, itemId, false) != null) {
                 return StatusCode.ITEM_EXISTS;
             }
             else{
@@ -127,9 +129,28 @@ public class CartServiceImpl implements CartService {
             totalPrice = totalPrice.add(itemAttribute.getCurrentPrice()
                     .multiply(BigDecimal.valueOf(userCart.getItemNum())));
         }
+        List<GeneralSingleItemVO> relatedItems = new ArrayList<>();
+        long itemsNumber = itemInfoRepository.count();
+        for(int i = 0; i < 6; i++) {
+            Integer itemId = (userCartRepository.findByCartId(singleCartVOList.get(0).getCartId()).getItemId() + i)
+                    % (int) itemsNumber;
+            ItemAttribute itemAttribute = itemAttributeRepository.findByItemId(itemId);
+            ItemInfo itemInfo = itemInfoRepository.findByItemId(itemId);
+            ItemCategory itemCategory = itemCategoryRepository.findByItemId(itemId);
+            relatedItems.add(new GeneralSingleItemVO(
+                    itemId,
+                    itemAttribute.getItemBrand(),
+                    itemInfo.getItemName(),
+                    itemInfo.getItemPic1(),
+                    itemAttribute.getCurrentPrice(),
+                    itemAttribute.getPreviousPrice(),
+                    itemCategory.getTargetGroup(),
+                    itemCategory.getUsageStyle()
+            ));
+        }
         CartVO cartVO = new CartVO();
         cartVO.setCartItemVOList(singleCartVOList);
-        cartVO.setGeneralSimpleItemVOList(null);
+        cartVO.setGeneralSingleItemVOList(relatedItems);
         cartVO.setTotalPrice(totalPrice);
         return cartVO;
     }

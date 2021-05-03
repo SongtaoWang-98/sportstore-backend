@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ItemInfoRepository extends JpaRepository<ItemInfo, Integer> {
     ItemInfo findByItemId(Integer itemId);
+    long count();
 }

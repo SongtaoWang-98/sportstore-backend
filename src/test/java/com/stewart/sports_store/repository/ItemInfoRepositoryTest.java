@@ -17,16 +17,8 @@ class ItemInfoRepositoryTest {
 
     @Test
     void findAll() {
-        List<ItemInfo> list = repository.findAll();
-        for(ItemInfo itemInfo: list) {
-            System.out.println(itemInfo);
-        }
+        System.out.println(repository.count());
     }
 
-    @Test
-    void findByItemId() {
-        ItemInfo itemInfo = repository.findByItemId(2);
-        System.out.println(itemInfo);
-    }
 
 }

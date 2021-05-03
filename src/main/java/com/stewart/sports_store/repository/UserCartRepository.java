@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface UserCartRepository extends JpaRepository<UserCart, Integer> {
-    UserCart findByUserIdAndItemId(Integer userId, Integer itemId);
+    UserCart findByUserIdAndItemIdAndIsPaid(Integer userId, Integer itemId, Boolean isPaid);
     UserCart findByCartId(Integer cartId);
     List<UserCart> findByUserIdAndIsPaid(Integer userId, Boolean isPaid);
     void deleteByCartId(Integer cartId);

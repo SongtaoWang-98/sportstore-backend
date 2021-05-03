@@ -39,7 +39,7 @@ public class ItemInfoServiceImpl implements ItemInfoService {
         List<ItemAttribute> itemAttributes = itemAttributeRepository.findByItemBrand(itemAttribute.getItemBrand());
         int num = 0;
         for(ItemAttribute i: itemAttributes) {
-            if(i.getItemId() > itemAttribute.getItemId()) {
+            if(!i.getItemId().equals(itemAttribute.getItemId())) {
                 ItemInfo info = itemInfoRepository.findByItemId(i.getItemId());
                 ItemCategory category = itemCategoryRepository.findByItemId(i.getItemId());
                 relatedItems.add(new GeneralSingleItemVO(
@@ -54,7 +54,7 @@ public class ItemInfoServiceImpl implements ItemInfoService {
                         ));
                 num++;
             }
-            if(num >= 3) break;
+            if(num >= 6) break;
         }
         return new DetailedInformationVO(
                 id,

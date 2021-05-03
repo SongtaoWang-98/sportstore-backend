@@ -23,9 +23,9 @@ class OrderServiceImplTest {
 //        private String deliveryType;
 //        private String paymentMethod;
         OrderDTO orderDTO = new OrderDTO(
-                new Integer[]{18},
-                14, "普通达", "微信"
+                new Integer[]{17,19},
+                14, "普通达", "支付宝"
         );
-        orderService.createOrder(orderDTO);
+        System.out.println(orderService.createOrder(orderDTO));
     }
 }

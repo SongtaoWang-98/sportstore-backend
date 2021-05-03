@@ -17,11 +17,7 @@ public class OrderController {
 
     @PostMapping("/create")
     public ResultVO createOrder(@RequestBody OrderDTO orderDTO) {
-        StatusCode statusCode = orderService.createOrder(orderDTO);
-        if(statusCode.getCode() == 200) {
-            return ResultVOUtil.success(statusCode.getMsg());
-        }
-        else return ResultVOUtil.fail(statusCode.getMsg());
+        return ResultVOUtil.success(orderService.createOrder(orderDTO));
     }
 
     @PutMapping("/delete")
